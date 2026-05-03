@@ -8,248 +8,107 @@
 <meta name="apple-mobile-web-app-title" content="Etta Timer">
 <meta name="theme-color" content="#13100C">
 <title>Etta Doyle Timer</title>
-
-<!-- PWA manifest inline -->
 <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRXR0YSBEb3lsZSBUaW1lciIsInNob3J0X25hbWUiOiJFdHRhIFRpbWVyIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMxMzEwMEMiLCJ0aGVtZV9jb2xvciI6IiMxMzEwMEMiLCJvcmllbnRhdGlvbiI6InBvcnRyYWl0In0=">
-
-<!-- Apple touch icon — gold star badge -->
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjQwIiBmaWxsPSIjMTMxMDBDIi8+PHRleHQgeD0iOTAiIHk9IjEyMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTAwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2M4YTIyNyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RTwvdGV4dD48L3N2Zz4=">
-
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg:       #13100C;
-    --surface:  #1c1812;
-    --border:   #2a2218;
-    --fg:       #E8D8B0;
-    --muted:    #8A7A5A;
-    --gold:     #c8a227;
-    --gold-dim: #7a6118;
-
-    /* Etta 1 — blue */
-    --e1-idle:  #0D2A4A;
-    --e1-run:   #1A6A2A;
-    --e1-glow:  #1a6aff33;
-
-    /* Etta 2 — purple */
-    --e2-idle:  #2A0D4A;
-    --e2-run:   #1A6A2A;
-    --e2-glow:  #8a1aff33;
-
-    /* Start/Stop */
-    --go-idle:  #0D3A1A;
-    --go-run:   #4A0D0D;
-
-    /* Cooldown */
-    --cd-idle:  #4A0D0D;
-    --cd-run:   #1A6A2A;
-
-    --amber:    #FFA500;
-    --red:      #FF4444;
-    --green:    #44FF88;
-
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bot: env(safe-area-inset-bottom, 0px);
+    --bg:#13100C; --surface:#1c1812; --border:#2a2218;
+    --fg:#E8D8B0; --muted:#8A7A5A; --gold:#c8a227;
+    --e1-idle:#0D2A4A; --e1-run:#1A6A2A;
+    --e2-idle:#2A0D4A; --e2-run:#1A6A2A;
+    --go-idle:#0D3A1A; --go-run:#4A0D0D;
+    --cd-idle:#4A0D0D; --cd-run:#1A6A2A;
+    --amber:#FFA500; --red:#FF4444; --green:#44FF88;
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bot:env(safe-area-inset-bottom,0px);
   }
+  html,body { height:100%; background:var(--bg); color:var(--fg);
+    font-family:'Rajdhani',sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-touch-callout:none; user-select:none; overflow:hidden; }
+  body { display:flex; flex-direction:column;
+    padding-top:var(--safe-top); padding-bottom:var(--safe-bot); }
 
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--fg);
-    font-family: 'Rajdhani', sans-serif;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    user-select: none;
-    overflow: hidden;
-  }
+  header { flex-shrink:0; padding:14px 20px 10px; text-align:center;
+    border-bottom:1px solid var(--border); }
+  header h1 { font-size:15px; font-weight:700; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--gold); }
+  header p  { font-size:11px; color:var(--muted); letter-spacing:.06em; margin-top:2px; }
 
-  body {
-    display: flex;
-    flex-direction: column;
-    padding-top: var(--safe-top);
-    padding-bottom: var(--safe-bot);
-  }
+  .grid { flex:1; display:grid; grid-template-columns:1fr 1fr;
+    grid-template-rows:1fr 1fr; gap:10px; padding:12px; min-height:0; }
 
-  /* ── Header ── */
-  header {
-    flex-shrink: 0;
-    padding: 14px 20px 10px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-  }
-  header h1 {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: .15em;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-  header p {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: .06em;
-    margin-top: 2px;
-  }
+  .timer-btn { position:relative; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:6px;
+    border:none; border-radius:14px; cursor:pointer; padding:16px 12px;
+    transition:transform .08s, background .25s; outline:none; overflow:hidden;
+    -webkit-tap-highlight-color:transparent; }
+  .timer-btn::before { content:''; position:absolute; inset:0;
+    border-radius:inherit; opacity:0; transition:opacity .15s;
+    background:rgba(255,255,255,.07); }
+  .timer-btn:active::before { opacity:1; }
+  .timer-btn:active { transform:scale(.96); }
+  .timer-btn::after { content:''; position:absolute; top:0; left:12px; right:12px;
+    height:1px; background:rgba(255,255,255,.12); border-radius:1px; }
 
-  /* ── Grid ── */
-  .grid {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 10px;
-    padding: 12px;
-    min-height: 0;
-  }
+  .btn-label  { font-size:13px; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--fg); opacity:.85; }
+  .btn-time   { font-family:'Share Tech Mono',monospace; font-size:28px;
+    color:var(--fg); line-height:1; letter-spacing:.04em; }
+  .btn-status { font-size:10px; letter-spacing:.15em; text-transform:uppercase;
+    color:var(--muted); height:14px; }
 
-  /* ── Timer button ── */
-  .timer-btn {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    border: none;
-    border-radius: 14px;
-    cursor: pointer;
-    padding: 16px 12px;
-    transition: transform .08s, filter .15s, background .25s;
-    outline: none;
-    overflow: hidden;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .timer-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    opacity: 0;
-    transition: opacity .15s;
-    background: rgba(255,255,255,.07);
-  }
-  .timer-btn:active::before { opacity: 1; }
-  .timer-btn:active { transform: scale(.96); }
-
-  /* Subtle top highlight line */
-  .timer-btn::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 12px; right: 12px;
-    height: 1px;
-    background: rgba(255,255,255,.12);
-    border-radius: 1px;
-  }
-
-  .btn-label {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--fg);
-    opacity: .85;
-  }
-
-  .btn-time {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 28px;
-    color: var(--fg);
-    line-height: 1;
-    letter-spacing: .04em;
-  }
-
-  .btn-status {
-    font-size: 10px;
-    letter-spacing: .15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    height: 14px;
-  }
-
-  /* Pulsing ring when running */
-  .pulse-ring {
-    display: none;
-    position: absolute;
-    inset: -3px;
-    border-radius: 17px;
-    border: 2px solid var(--green);
-    opacity: .5;
-    animation: pulse-ring 1.4s ease-out infinite;
-  }
-  .timer-btn.running .pulse-ring { display: block; }
-
+  .pulse-ring { display:none; position:absolute; inset:-3px; border-radius:17px;
+    border:2px solid var(--green); opacity:.5;
+    animation:pulse-ring 1.4s ease-out infinite; }
+  .timer-btn.running .pulse-ring { display:block; }
   @keyframes pulse-ring {
-    0%   { transform: scale(1);    opacity: .5; }
-    70%  { transform: scale(1.02); opacity: .1; }
-    100% { transform: scale(1),    opacity: .5; }
+    0%   { transform:scale(1);    opacity:.5; }
+    70%  { transform:scale(1.02); opacity:.1; }
+    100% { transform:scale(1);    opacity:.5; }
   }
 
-  /* ── Colour states ── */
-  /* Etta 1 */
-  #btn-e1                { background: var(--e1-idle); }
-  #btn-e1.running        { background: var(--e1-run); }
-  #btn-e1.running .pulse-ring { border-color: #44aaff; }
-  #btn-e1.amber          { background: #3a2800; }
-  #btn-e1.danger         { background: #3a0808; }
-  #btn-e1.done           { background: #3a0808; }
+  #btn-e1               { background:var(--e1-idle); }
+  #btn-e1.running       { background:var(--e1-run); }
+  #btn-e1.running .pulse-ring { border-color:#44aaff; }
+  #btn-e1.amber         { background:#3a2800; }
+  #btn-e1.danger        { background:#3a0808; }
+  #btn-e1.done          { background:#3a0808; }
 
-  /* Etta 2 */
-  #btn-e2                { background: var(--e2-idle); }
-  #btn-e2.running        { background: var(--e2-run); }
-  #btn-e2.running .pulse-ring { border-color: #cc88ff; }
-  #btn-e2.amber          { background: #3a2800; }
-  #btn-e2.danger         { background: #3a0808; }
-  #btn-e2.done           { background: #3a0808; }
+  #btn-e2               { background:var(--e2-idle); }
+  #btn-e2.running       { background:var(--e2-run); }
+  #btn-e2.running .pulse-ring { border-color:#cc88ff; }
+  #btn-e2.amber         { background:#3a2800; }
+  #btn-e2.danger        { background:#3a0808; }
+  #btn-e2.done          { background:#3a0808; }
 
-  /* Start/Stop */
-  #btn-start             { background: var(--go-idle); }
-  #btn-start.running     { background: var(--go-run); }
-  #btn-start .btn-time   { font-family: 'Rajdhani', sans-serif; font-size: 20px;
-                            font-weight: 700; letter-spacing: .06em; }
+  #btn-start            { background:var(--go-idle); }
+  #btn-start.running    { background:var(--go-run); }
+  #btn-start .btn-time  { font-family:'Rajdhani',sans-serif; font-size:20px;
+    font-weight:700; letter-spacing:.06em; }
 
-  /* Cooldown */
-  #btn-cd                { background: var(--cd-idle); }
-  #btn-cd.running        { background: var(--cd-run); }
-  #btn-cd.amber          { background: #3a2800; }
-  #btn-cd.danger         { background: #3a0808; }
-  #btn-cd.done           { background: #3a0808; }
+  #btn-cd               { background:var(--cd-idle); }
+  #btn-cd.running       { background:var(--cd-run); }
+  #btn-cd.amber         { background:#3a2800; }
+  #btn-cd.danger        { background:#3a0808; }
+  #btn-cd.done          { background:#3a0808; }
 
-  /* Amber / danger text colours */
-  .timer-btn.amber .btn-time  { color: var(--amber); }
-  .timer-btn.danger .btn-time { color: var(--red); }
-  .timer-btn.done .btn-time   { color: var(--red); }
-  .timer-btn.done .btn-status { color: var(--red); }
+  .timer-btn.amber  .btn-time { color:var(--amber); }
+  .timer-btn.danger .btn-time { color:var(--red); }
+  .timer-btn.done   .btn-time { color:var(--red); }
+  .timer-btn.done   .btn-status { color:var(--red); }
 
-  /* ── Done flash animation ── */
-  @keyframes done-flash {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: .4; }
-  }
-  .timer-btn.done .btn-time { animation: done-flash .6s ease-in-out infinite; }
+  @keyframes done-flash { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .timer-btn.done .btn-time { animation:done-flash .6s ease-in-out infinite; }
 
-  /* ── Start button idle animation ── */
-  #btn-start:not(.running) .btn-time { color: var(--green); }
-  #btn-start.running .btn-time       { color: var(--red); }
+  #btn-start:not(.running) .btn-time { color:var(--green); }
+  #btn-start.running        .btn-time { color:var(--red); }
 
-  /* ── Subtle scanline texture overlay ── */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0,0,0,.06) 0px,
-      rgba(0,0,0,.06) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    pointer-events: none;
-    z-index: 999;
-  }
+  body::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:999;
+    background:repeating-linear-gradient(0deg,
+      rgba(0,0,0,.06) 0px,rgba(0,0,0,.06) 1px,transparent 1px,transparent 3px); }
 </style>
 </head>
 <body>
@@ -260,8 +119,6 @@
 </header>
 
 <div class="grid">
-
-  <!-- Etta 1 -->
   <button class="timer-btn" id="btn-e1" onclick="toggleE1()">
     <div class="pulse-ring"></div>
     <span class="btn-label">Etta 1</span>
@@ -269,7 +126,6 @@
     <span class="btn-status" id="e1-status">tap to start</span>
   </button>
 
-  <!-- Etta 2 -->
   <button class="timer-btn" id="btn-e2" onclick="toggleE2()">
     <div class="pulse-ring"></div>
     <span class="btn-label">Etta 2</span>
@@ -277,7 +133,6 @@
     <span class="btn-status" id="e2-status">tap to start</span>
   </button>
 
-  <!-- Start / Stop both -->
   <button class="timer-btn" id="btn-start" onclick="toggleStart()">
     <div class="pulse-ring"></div>
     <span class="btn-label" id="start-label">Start</span>
@@ -285,208 +140,185 @@
     <span class="btn-status" id="start-status">etta 1 + etta 2</span>
   </button>
 
-  <!-- Cooldown -->
   <button class="timer-btn" id="btn-cd" onclick="toggleCd()">
     <div class="pulse-ring"></div>
     <span class="btn-label">Cooldown</span>
     <span class="btn-time" id="cd-time">49:00</span>
     <span class="btn-status" id="cd-status">tap to start</span>
   </button>
-
 </div>
 
 <script>
-// ── Durations ─────────────────────────────────────────────────────────────────
-const ETTA1 = 4 * 60 + 10;
-const ETTA2 = 31 * 60;
-const CD    = 49 * 60;
+// ── Durations (seconds) ───────────────────────────────────────────────────────
+const FULL = { e1: 4*60+10, e2: 31*60, cd: 49*60 };
 
 // ── State ─────────────────────────────────────────────────────────────────────
+// startedAt = Date.now() when this timer last started
+// baseRem   = remaining seconds at the moment it last started
+// on        = currently running
+// tid       = setInterval handle
 const s = {
-  e1: { rem: ETTA1, on: false, tid: null, full: ETTA1 },
-  e2: { rem: ETTA2, on: false, tid: null, full: ETTA2 },
-  cd: { rem: CD,    on: false, tid: null, full: CD    },
+  e1: { on:false, baseRem:FULL.e1, startedAt:0, tid:null },
+  e2: { on:false, baseRem:FULL.e2, startedAt:0, tid:null },
+  cd: { on:false, baseRem:FULL.cd, startedAt:0, tid:null },
 };
+
+// ── Wall-clock remaining ──────────────────────────────────────────────────────
+// Always derived from real time so backgrounding can't drift it.
+function getRem(key) {
+  const t = s[key];
+  if (!t.on) return t.baseRem;
+  const elapsed = Math.floor((Date.now() - t.startedAt) / 1000);
+  return Math.max(0, t.baseRem - elapsed);
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function fmt(secs) {
   secs = Math.max(0, secs);
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
+  return `${Math.floor(secs/60)}:${(secs%60).toString().padStart(2,'0')}`;
 }
-
-function vibrate(pattern) {
-  if (navigator.vibrate) navigator.vibrate(pattern);
-}
-
+function vib(p) { if (navigator.vibrate) navigator.vibrate(p); }
 function alarm() {
-  // Vibration alarm — 6 pulses matching the Python double-duration beep
-  vibrate([300, 150, 300, 150, 300, 150, 300, 150, 300, 150, 300, 150,
-           300, 150, 300, 150, 300, 150, 300, 150, 300, 150, 300]);
-
-  // Audio beep via Web Audio API
+  vib([300,150,300,150,300,150,300,150,300,150,300,150,
+       300,150,300,150,300,150,300,150,300,150,300]);
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const beepCount = 12; // 6 pairs = double duration
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
     let t = ctx.currentTime;
-    for (let i = 0; i < beepCount; i++) {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.frequency.value = i % 2 === 0 ? 1000 : 1200;
-      gain.gain.setValueAtTime(0.8, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
-      osc.start(t); osc.stop(t + 0.4);
-      t += 0.42;
+    for (let i=0;i<12;i++) {
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = i%2===0 ? 1000 : 1200;
+      g.gain.setValueAtTime(0.8,t);
+      g.gain.exponentialRampToValueAtTime(0.001,t+0.38);
+      o.start(t); o.stop(t+0.4); t+=0.42;
     }
-  } catch(e) {}
+  } catch(e){}
 }
 
-// ── Per-timer render ──────────────────────────────────────────────────────────
+// ── Render ────────────────────────────────────────────────────────────────────
 function renderTimer(key, btnId, timeId, statusId) {
-  const t    = s[key];
-  const btn  = document.getElementById(btnId);
-  const time = document.getElementById(timeId);
-  const stat = document.getElementById(statusId);
+  const rem = getRem(key);
+  const t   = s[key];
+  const btn = document.getElementById(btnId);
+  btn.classList.remove('running','amber','danger','done');
 
-  // Remove all state classes
-  btn.classList.remove('running', 'amber', 'danger', 'done');
-
-  if (t.rem <= 0 && !t.on) {
-    // Done
+  if (rem <= 0 && !t.on) {
     btn.classList.add('done');
-    time.textContent = '⏰ DONE';
-    stat.textContent = 'tap to reset';
+    document.getElementById(timeId).textContent   = '⏰ DONE';
+    document.getElementById(statusId).textContent = 'tap to reset';
+    return;
+  }
+  document.getElementById(timeId).textContent = fmt(rem);
+  if (t.on) {
+    btn.classList.add('running');
+    if      (rem <= 10) btn.classList.add('danger');
+    else if (rem <= 30) btn.classList.add('amber');
+    document.getElementById(statusId).textContent = 'running — tap to reset';
   } else {
-    time.textContent = fmt(t.rem);
-    if (t.on) {
-      btn.classList.add('running');
-      if (t.rem <= 10)       btn.classList.add('danger');
-      else if (t.rem <= 30)  btn.classList.add('amber');
-      stat.textContent = 'running — tap to reset';
-    } else {
-      stat.textContent = 'tap to start';
-    }
+    document.getElementById(statusId).textContent = 'tap to start';
   }
 }
 
 function renderStart() {
-  const btn   = document.getElementById('btn-start');
-  const icon  = document.getElementById('start-icon');
-  const lbl   = document.getElementById('start-label');
-  const stat  = document.getElementById('start-status');
-
   const anyOn = s.e1.on || s.e2.on;
+  const btn   = document.getElementById('btn-start');
   btn.classList.toggle('running', anyOn);
-
-  if (anyOn) {
-    lbl.textContent  = 'Stop';
-    icon.textContent = '■ Both';
-    stat.textContent = 'tap to reset both';
-  } else {
-    lbl.textContent  = 'Start';
-    icon.textContent = '▶ Both';
-    stat.textContent = 'etta 1 + etta 2';
-  }
+  document.getElementById('start-label').textContent = anyOn ? 'Stop'    : 'Start';
+  document.getElementById('start-icon').textContent  = anyOn ? '■ Both'  : '▶ Both';
+  document.getElementById('start-status').textContent= anyOn ? 'tap to reset both' : 'etta 1 + etta 2';
 }
 
-// ── Tick ──────────────────────────────────────────────────────────────────────
-function tick(key, btnId, timeId, statusId, renderFn) {
-  if (!s[key].on) return;
-  s[key].rem--;
-  renderFn();
+const rE1 = () => renderTimer('e1','btn-e1','e1-time','e1-status');
+const rE2 = () => renderTimer('e2','btn-e2','e2-time','e2-status');
+const rCd = () => renderTimer('cd','btn-cd','cd-time','cd-status');
 
-  if (s[key].rem <= 0) {
-    s[key].on  = false;
-    s[key].tid = null;
+// ── Tick: just re-render every second; getRem() does the real maths ───────────
+function startTick(key, renderFn) {
+  if (s[key].tid) { clearInterval(s[key].tid); s[key].tid = null; }
+  s[key].tid = setInterval(() => {
+    const rem = getRem(key);
     renderFn();
-    renderStart();
-    alarm();
-    return;
-  }
-  s[key].tid = setTimeout(() => tick(key, btnId, timeId, statusId, renderFn), 1000);
-}
-
-function startTick(key, btnId, timeId, statusId, renderFn) {
-  if (s[key].tid) { clearTimeout(s[key].tid); s[key].tid = null; }
-  s[key].on  = true;
-  s[key].tid = setTimeout(() => tick(key, btnId, timeId, statusId, renderFn), 1000);
-  renderFn();
-  renderStart();
+    if (key !== 'cd') renderStart();
+    if (rem <= 0) {
+      clearInterval(s[key].tid); s[key].tid = null;
+      s[key].on = false;
+      renderFn();
+      renderStart();
+      alarm();
+    }
+  }, 500); // 500ms so we never show a stale second after resume
 }
 
 // ── Reset ─────────────────────────────────────────────────────────────────────
-function resetTimer(key, full, btnId, timeId, statusId, renderFn) {
-  if (s[key].tid) { clearTimeout(s[key].tid); s[key].tid = null; }
-  s[key].on  = false;
-  s[key].rem = full;
+function reset(key, renderFn) {
+  clearInterval(s[key].tid); s[key].tid = null;
+  s[key].on       = false;
+  s[key].baseRem  = FULL[key];
+  s[key].startedAt= 0;
   renderFn();
   renderStart();
 }
 
-// ── Bound render functions ────────────────────────────────────────────────────
-const rE1 = () => renderTimer('e1', 'btn-e1', 'e1-time', 'e1-status');
-const rE2 = () => renderTimer('e2', 'btn-e2', 'e2-time', 'e2-status');
-const rCd = () => renderTimer('cd', 'btn-cd', 'cd-time', 'cd-status');
+// ── Start ─────────────────────────────────────────────────────────────────────
+function startTimer(key, renderFn) {
+  s[key].baseRem   = FULL[key];
+  s[key].startedAt = Date.now();
+  s[key].on        = true;
+  renderFn();
+  renderStart();
+  startTick(key, renderFn);
+}
 
-// ── Button handlers ───────────────────────────────────────────────────────────
+// ── Handlers ──────────────────────────────────────────────────────────────────
 function toggleE1() {
-  vibrate(30);
-  if (s.e1.on || s.e1.rem <= 0) {
-    resetTimer('e1', ETTA1, 'btn-e1', 'e1-time', 'e1-status', rE1);
-  } else {
-    startTick('e1', 'btn-e1', 'e1-time', 'e1-status', rE1);
-  }
+  vib(30);
+  s.e1.on || getRem('e1')<=0 ? reset('e1',rE1) : startTimer('e1',rE1);
 }
-
 function toggleE2() {
-  vibrate(30);
-  if (s.e2.on || s.e2.rem <= 0) {
-    resetTimer('e2', ETTA2, 'btn-e2', 'e2-time', 'e2-status', rE2);
-  } else {
-    startTick('e2', 'btn-e2', 'e2-time', 'e2-status', rE2);
-  }
+  vib(30);
+  s.e2.on || getRem('e2')<=0 ? reset('e2',rE2) : startTimer('e2',rE2);
 }
-
 function toggleStart() {
-  vibrate(30);
-  const anyOn = s.e1.on || s.e2.on;
-  if (anyOn) {
-    // Reset both
-    resetTimer('e1', ETTA1, 'btn-e1', 'e1-time', 'e1-status', rE1);
-    resetTimer('e2', ETTA2, 'btn-e2', 'e2-time', 'e2-status', rE2);
+  vib(30);
+  if (s.e1.on || s.e2.on) {
+    reset('e1',rE1); reset('e2',rE2);
   } else {
-    // Start both fresh
-    resetTimer('e1', ETTA1, 'btn-e1', 'e1-time', 'e1-status', rE1);
-    resetTimer('e2', ETTA2, 'btn-e2', 'e2-time', 'e2-status', rE2);
-    startTick('e1', 'btn-e1', 'e1-time', 'e1-status', rE1);
-    startTick('e2', 'btn-e2', 'e2-time', 'e2-status', rE2);
+    startTimer('e1',rE1); startTimer('e2',rE2);
   }
 }
-
 function toggleCd() {
-  vibrate(30);
-  if (s.cd.on || s.cd.rem <= 0) {
-    resetTimer('cd', CD, 'btn-cd', 'cd-time', 'cd-status', rCd);
-  } else {
-    startTick('cd', 'btn-cd', 'cd-time', 'cd-status', rCd);
-  }
+  vib(30);
+  s.cd.on || getRem('cd')<=0 ? reset('cd',rCd) : startTimer('cd',rCd);
 }
 
-// ── Prevent sleep on iOS (keeps screen on while running) ─────────────────────
-let wakeLock = null;
-async function requestWakeLock() {
-  try {
-    if ('wakeLock' in navigator) {
-      wakeLock = await navigator.wakeLock.request('screen');
+// ── Resume after backgrounding ────────────────────────────────────────────────
+// When iOS resumes the page, intervals may have fired 0 or few times.
+// We simply re-render — getRem() recalculates from wall-clock automatically.
+// If any timer expired while backgrounded, fire the alarm immediately.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+
+  ['e1','e2','cd'].forEach(key => {
+    if (!s[key].on) return;
+    const rem = getRem(key);
+    if (rem <= 0) {
+      // Expired in background — snap to done state
+      clearInterval(s[key].tid); s[key].tid = null;
+      s[key].on = false;
+      alarm();
     }
-  } catch(e) {}
-}
-document.addEventListener('visibilitychange', async () => {
-  if (document.visibilityState === 'visible') await requestWakeLock();
+  });
+
+  rE1(); rE2(); rCd(); renderStart();
 });
-requestWakeLock();
+
+// ── Wake lock ─────────────────────────────────────────────────────────────────
+(async () => {
+  try {
+    if ('wakeLock' in navigator)
+      await navigator.wakeLock.request('screen');
+  } catch(e){}
+})();
 </script>
 </body>
 </html>
